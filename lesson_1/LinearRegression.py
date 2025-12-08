@@ -1,12 +1,3 @@
-"""
-interactive_linear_regression.py
-
-交互式线性回归演示：
-- 自动生成 2D 数据 (y = w*x + b + noise)
-- 支持两种求解方法：最小二乘法(解析解) 或 梯度下降
-- 每次迭代绘制当前拟合直线
-- 鼠标点击继续下一轮迭代
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -27,9 +18,7 @@ np.random.seed(0)
 X = np.random.uniform(-5, 5, size=N_SAMPLES)
 y = TRUE_W * X + TRUE_B + np.random.randn(N_SAMPLES) * NOISE_STD
 
-# -----------------------------
 # 可视化函数
-# -----------------------------
 def plot_line(X, y, w, b, epoch=None, loss=None):
     plt.figure(figsize=(6,6))
     plt.scatter(X, y, label='Data')
@@ -53,12 +42,19 @@ def plot_line(X, y, w, b, epoch=None, loss=None):
 
 # 方法 1: 最小二乘法解析解
 def OLS():
-    print("使用最小二乘法求解参数...")
-    X_aug = np.column_stack([X, np.ones(X.shape[0])]) # 增加偏置项
-    params = np.linalg.inv(X_aug.T @ X_aug) @ X_aug.T @ y
-    w_ols, b_ols = params
-    print(f"解析解结果: w={w_ols:.4f}, b={b_ols:.4f}")
-    plot_line(X, y, w_ols, b_ols, epoch=0, loss=np.mean((y - (w_ols*X + b_ols))**2))
+    print("使用最小二乘法（解二元一次方程）求解参数...")    
+    Sx  = np.sum(X)
+    Sy  = np.sum(y)
+    Sxx = np.sum(X * X)
+    Sxy = np.sum(X * y)
+    # 解二元一次方程组：
+    # w*Sx + b*N = Sy
+    # w*Sxx + b*Sx = Sxy
+    w = (N_SAMPLES * Sxy - Sx * Sy) / (Sxx * N_SAMPLES - Sx * Sx)
+    b = (Sy - w * Sx) / N_SAMPLES
+
+    print(f"解析解结果: w={w:.4f}, b={b:.4f}")
+    plot_line(X, y, w, b, epoch=0, loss=np.mean((y - (w*X + b))**2))
 
 # 方法 2: 梯度下降
 def GD():
@@ -77,5 +73,5 @@ def GD():
 
 #main 函数
 if __name__ == "__main__":
-    # OLS()
-    GD()
+    OLS()
+    # GD()

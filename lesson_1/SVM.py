@@ -1,18 +1,8 @@
-"""
-interactive_svm.py
-
-交互式 One-vs-Rest 线性 SVM 演示：
-- 自动生成 2D 数据
-- 类别数可配置
-- 每个 epoch 显示决策区域、权重方向、训练 loss 和 accuracy
-- 鼠标点击继续
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 
-# -----------------------------
+
 # 配置
-# -----------------------------
 NUM_CLASSES = 2      # 类别数
 N_PER_CLASS = 20     # 每类样本数
 LR = 0.01            # 学习率
@@ -22,9 +12,7 @@ COV = 0.8            # 生成点方差
 
 np.random.seed(0)
 
-# -----------------------------
-# 生成数据
-# -----------------------------
+# 随机生成两簇数据
 means = [(-5 + i*3, -5 + i*3) for i in range(NUM_CLASSES)]
 X = np.vstack([np.random.randn(N_PER_CLASS, 2) * COV + m for m in means])
 y = np.hstack([[i] * N_PER_CLASS for i in range(NUM_CLASSES)])
@@ -34,9 +22,8 @@ y = y[perm]
 
 print(f"Generated dataset: {len(X)} points, class counts:", {i: int(sum(y==i)) for i in np.unique(y)})
 
-# -----------------------------
+
 # One-vs-Rest 线性 SVM
-# -----------------------------
 class OneVsRestLinearSVM:
     def __init__(self, n_classes, lr=0.01, C=1.0):
         self.n_classes = n_classes
@@ -112,9 +99,7 @@ class OneVsRestLinearSVM:
             pass
         plt.close()
 
-# -----------------------------
 # 训练
-# -----------------------------
 svm = OneVsRestLinearSVM(NUM_CLASSES, LR, C)
 svm.fit(X, y, epochs=EPOCHS)
 

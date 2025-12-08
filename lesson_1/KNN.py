@@ -1,18 +1,8 @@
-"""
-interactive_knn.py
-
-交互式 KNN 演示：
-- 自动生成 2D 数据
-- 类别数可配置
-- 对若干测试点逐一展示最近邻并预测
-- 鼠标点击继续
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 
-# -----------------------------
+
 # 配置
-# -----------------------------
 NUM_CLASSES = 4       # 类别数
 N_PER_CLASS = 20      # 每类样本数
 K = 5                 # KNN k值
@@ -21,9 +11,8 @@ COV = 0.8             # 生成点的方差
 
 np.random.seed(0)
 
-# -----------------------------
-# 生成数据
-# -----------------------------
+
+# 随机生成 NUM_CLASSES 簇数据
 means = [(-5 + i*3, -5 + i*3) for i in range(NUM_CLASSES)]
 X = np.vstack([np.random.randn(N_PER_CLASS, 2) * COV + m for m in means])
 y = np.hstack([[i] * N_PER_CLASS for i in range(NUM_CLASSES)])
@@ -33,7 +22,7 @@ perm = np.random.permutation(len(X))
 X = X[perm]
 y = y[perm]
 
-# 选择测试点
+# 切割训练集和测试集
 test_indices = np.random.choice(len(X), N_TEST, replace=False)
 X_test = X[test_indices]
 y_test = y[test_indices]
@@ -45,9 +34,7 @@ y_train = y[train_mask]
 
 print(f"Generated dataset: {len(X)} points, class counts:", {i: int(sum(y==i)) for i in np.unique(y)})
 
-# -----------------------------
 # KNN 类
-# -----------------------------
 class KNN:
     def __init__(self, k=5):
         self.k = k
@@ -64,9 +51,8 @@ class KNN:
         pred = counts.argmax()
         return pred, k_idx, distances[k_idx]
 
-# -----------------------------
-# KNN 交互演示
-# -----------------------------
+
+# 显示图像
 knn = KNN(k=K)
 knn.fit(X_train, y_train)
 

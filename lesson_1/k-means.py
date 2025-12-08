@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --------------------------
-# 生成示例数据
-# --------------------------
-np.random.seed(42)
+
+# 生成样本数据
+np.random.seed(0)
 X = np.vstack([
     np.random.randn(50, 2) + np.array([0, 0]),
     np.random.randn(50, 2) + np.array([5, 5]),
@@ -38,9 +37,8 @@ for _ in range(max_iter):
         break
     centroids = new_centroids
 
-# --------------------------
-# 手动逐步显示图像：点击鼠标继续
-# --------------------------
+
+# 显示图像
 plt.ion()  # 打开交互模式
 fig, ax = plt.subplots(figsize=(6, 6))
 
