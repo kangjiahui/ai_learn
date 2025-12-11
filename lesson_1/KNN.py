@@ -13,7 +13,7 @@ np.random.seed(0)
 
 
 # 随机生成 NUM_CLASSES 簇数据
-means = [(-5 + i*3, -5 + i*3) for i in range(NUM_CLASSES)]
+means = [(-5 + i*2, -5 + i*2) for i in range(NUM_CLASSES)]
 X = np.vstack([np.random.randn(N_PER_CLASS, 2) * COV + m for m in means])
 y = np.hstack([[i] * N_PER_CLASS for i in range(NUM_CLASSES)])
 

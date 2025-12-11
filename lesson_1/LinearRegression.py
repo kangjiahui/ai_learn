@@ -73,5 +73,5 @@ def GD():
 
 #main 函数
 if __name__ == "__main__":
-    OLS()
-    # GD()
+    # OLS()
+    GD()
