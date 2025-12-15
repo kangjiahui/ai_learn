@@ -7,7 +7,7 @@ from dataset.mnist import load_mnist
 from two_layer_net import TwoLayerNet
 
 # 读入数据
-(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, flatten=True, one_hot_label=True)
 
 network = TwoLayerNet(input_size=784, hidden_size=30, output_size=10)
 
@@ -48,5 +48,5 @@ for i in range(iters_num):
         print(train_acc, test_acc)
 
 # 保存参数
-network.save_params("lesson_2/params.pkl")
+network.save_params("params.pkl")
 print("Saved Network Parameters!")

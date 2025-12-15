@@ -1,4 +1,7 @@
+sample_digits/
+data/
 *.pkl
+*.pth
 *.gz
 .DS_Store
 # Byte-compiled / optimized / DLL files

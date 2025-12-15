@@ -8,6 +8,7 @@ import gzip
 import pickle
 import os
 import numpy as np
+from PIL import Image  # 添加 PIL 导入
 
 
 url_base = 'https://ossci-datasets.s3.amazonaws.com/mnist/'  # mirror site
@@ -124,5 +125,27 @@ def load_mnist(normalize=True, flatten=True, one_hot_label=False):
     return (dataset['train_img'], dataset['train_label']), (dataset['test_img'], dataset['test_label']) 
 
 
+def save_sample_digits(save_dir='./sample_digits'):
+    """
+    保存 MNIST 测试集中 0-9 每个数字的第一张图片
+    """
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    
+    # 加载测试数据，不展平，保持 (28,28) 形状
+    _, (x_test, t_test) = load_mnist(normalize=True, flatten=False, one_hot_label=False)
+    
+    for digit in range(10):
+        # 找到第一个标签为 digit 的索引
+        idx = np.where(t_test == digit)[0][0]
+        image = x_test[idx][0]  # 形状 (28, 28)，值在 [0,1]
+        
+        # 转换为 PIL 图像并保存
+        img = Image.fromarray((image * 255).astype(np.uint8), mode='L')
+        img.save(os.path.join(save_dir, f'digit_{digit}.png'))
+        print(f'Saved digit {digit} as {os.path.join(save_dir, f"digit_{digit}.png")}')
+
+
 if __name__ == '__main__':
-    init_mnist()
+    # init_mnist()
+    save_sample_digits()
