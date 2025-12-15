@@ -21,7 +21,7 @@ class TwoLayerNet:
         # 生成层
         self.layers = OrderedDict()
         self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
-        self.layers['Relu1'] = Relu()
+        self.layers['Sigmoid'] = Sigmoid()
         self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
 
         self.lastLayer = SoftmaxWithLoss()

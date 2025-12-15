@@ -9,7 +9,7 @@ from common.functions import softmax
 import cv2
 
 
-network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+network = TwoLayerNet(input_size=784, hidden_size=30, output_size=10)
 network.load_params("lesson_2/params.pkl")
 
 def _load_image_as_mnist(path):

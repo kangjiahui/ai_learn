@@ -1,6 +1,11 @@
 # coding: utf-8
 import numpy as np
 
+"""
+数值微分法求梯度
+仅用作学习参考，实际应用中请使用反向传播法求梯度
+"""
+
 def _numerical_gradient_1d(f, x):
     h = 1e-4 # 0.0001
     grad = np.zeros_like(x)
