@@ -69,9 +69,19 @@ cfgs = {
 }
 
 
-def vgg(model_name="vgg16", **kwargs):
+def vgg(model_name="vgg16", num_classes=1000, init_weights=False, pretrained=False):
     assert model_name in cfgs, "Warning: model number {} not in cfgs dict!".format(model_name)
     cfg = cfgs[model_name]
 
-    model = VGG(make_features(cfg), **kwargs)
+    model = VGG(make_features(cfg), num_classes=num_classes, init_weights=init_weights)
+    
+    if pretrained and model_name in model_urls:
+        # 加载预训练权重
+        state_dict = torch.hub.load_state_dict_from_url(model_urls[model_name], map_location='cpu')
+        # 移除分类器权重，因为 num_classes 可能不同
+        state_dict.pop('classifier.6.weight', None)
+        state_dict.pop('classifier.6.bias', None)
+        model.load_state_dict(state_dict, strict=False)
+        print(f"Loaded pretrained weights for {model_name}")
+    
     return model

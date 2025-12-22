@@ -18,7 +18,7 @@ def main():
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     # load image
-    img_path = "../tulip.jpg"
+    img_path = "flower_data/flower_photos/tulips/11746276_de3dec8201.jpg"
     assert os.path.exists(img_path), "file: '{}' dose not exist.".format(img_path)
     img = Image.open(img_path)
     plt.imshow(img)
@@ -28,7 +28,7 @@ def main():
     img = torch.unsqueeze(img, dim=0)
 
     # read class_indict
-    json_path = './class_indices.json'
+    json_path = 'lesson_3/vggnet/class_indices.json'
     assert os.path.exists(json_path), "file: '{}' dose not exist.".format(json_path)
 
     with open(json_path, "r") as f:
@@ -37,7 +37,7 @@ def main():
     # create model
     model = vgg(model_name="vgg16", num_classes=5).to(device)
     # load model weights
-    weights_path = "./vgg16Net.pth"
+    weights_path = "vgg16Net.pth" # 对比 vgg16Net.pth 和 vgg16Net_pretrained.pth
     assert os.path.exists(weights_path), "file: '{}' dose not exist.".format(weights_path)
     model.load_state_dict(torch.load(weights_path, map_location=device))
 

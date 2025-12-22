@@ -11,7 +11,17 @@ from model import vgg
 
 
 def main():
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # 检查 MPS (Apple Silicon GPU) 可用性
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+        print("Using MPS (Apple Silicon GPU) device.")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda:0")
+        print("Using CUDA device.")
+    else:
+        device = torch.device("cpu")
+        print("Using CPU device.")
+    
     print("using {} device.".format(device))
 
     data_transform = {
@@ -23,8 +33,8 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
-    data_root = os.path.abspath(os.path.join(os.getcwd(), "../.."))  # get data root path
-    image_path = os.path.join(data_root, "data_set", "flower_data")  # flower data set path
+    data_root = os.path.abspath(os.path.join(os.getcwd()))  # get data root path
+    image_path = os.path.join(data_root, "flower_data")  # flower data set path
     assert os.path.exists(image_path), "{} path does not exist.".format(image_path)
     train_dataset = datasets.ImageFolder(root=os.path.join(image_path, "train"),
                                          transform=data_transform["train"])
@@ -59,14 +69,28 @@ def main():
     # test_image, test_label = test_data_iter.next()
 
     model_name = "vgg16"
-    net = vgg(model_name=model_name, num_classes=5, init_weights=True)
+    # 是否使用预训练权重（迁移学习）
+    use_pretrained = True  # 设置为 True 启用迁移学习，False 为从头训练
+    
+    net = vgg(model_name=model_name, num_classes=5, init_weights=True, pretrained=use_pretrained)
     net.to(device)
+    
+    if use_pretrained:
+        # 冻结特征提取层，只训练分类器
+        for param in net.features.parameters():
+            param.requires_grad = False
+        print("Using transfer learning: features frozen, training classifier only")
+        # 只优化分类器参数
+        optimizer = optim.Adam(net.classifier.parameters(), lr=0.0001)
+    else:
+        print("Training from scratch")
+        optimizer = optim.Adam(net.parameters(), lr=0.0001)
+    
     loss_function = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
-    epochs = 30
+    epochs = 10 if use_pretrained else 30  # 迁移学习收敛更快，减少 epochs
     best_acc = 0.0
-    save_path = './{}Net.pth'.format(model_name)
+    save_path = './{}Net_{}.pth'.format(model_name, 'pretrained' if use_pretrained else 'scratch')
     train_steps = len(train_loader)
     for epoch in range(epochs):
         # train
